@@ -1,0 +1,21 @@
+ORAL;Paracetamol;500mg;O01;Dor e Febre
+ORAL;Amoxicilina;500mg;O02;Antibiotico para infeccoes
+ORAL;Ibuprofeno;600mg;O03;Anti-inflamatorio e dor
+ORAL;Dipirona;500mg;O04;Analgesico e Antitermico
+ORAL;Omeprazol;20mg;O05;Protetor gastrico
+ORAL;Loratadina;10mg;O06;Antialergico
+ORAL;Simeticona;125mg;O07;Alivio de gases
+INJETAVEL;Benzetacil;1.2mi UI;I01;Infeccao bacteriana forte
+INJETAVEL;Dexametasona;4mg/ml;I02;Anti-inflamatorio esteroide
+INJETAVEL;Tramadol;50mg/ml;I03;Dor moderada a severa
+INJETAVEL;Ceftriaxona;1g;I04;Antibiotico hospitalar
+INJETAVEL;Insulina NPH;100UI/ml;I05;Controle de Glicemia
+INJETAVEL;Complexo B;2ml;I06;Suplementacao vitaminica
+INJETAVEL;Voltaren;75mg/3ml;I07;Anti-inflamatorio injetavel
+TOPICO;Nebacetin;Pomada;T01;Cicatrizante com antibiotico
+TOPICO;Diclofenaco Gel;60g;T02;Dor muscular local
+TOPICO;Cetoconazol;Creme;T03;Antifungico para pele
+TOPICO;Bepantol;Pomada;T04;Hidratacao e cicatrizacao
+TOPICO;Hipoglos;Pomada;T05;Assaduras e protecao
+TOPICO;Canesten;Creme;T06;Tratamento de micoses
+TOPICO;Finalgon;Pomada;T07;Alivio de dores articulares
