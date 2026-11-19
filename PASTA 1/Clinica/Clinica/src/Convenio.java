@@ -1,35 +1,29 @@
 public class Convenio {
     private String nome;
-    private String codigo;
-    private double percentualCoparticipacao;
-    private double valorMensalidade;
+    private double percentualCoparticipacao; // de 0 a 100: quanto o paciente paga
 
-        public Convenio(String nome, String codigo, double percentualCoparticipacao, double valorMensalidade) {
-            this.nome = nome;
-            this.codigo = codigo;
-            this.percentualCoparticipacao = percentualCoparticipacao;
-            this.valorMensalidade = valorMensalidade;
+    public Convenio(String nome, double percentualCoparticipacao) throws DadoInvalidoException {
+        this.nome = Validador.texto("Nome do convênio", nome);
+        if (!(percentualCoparticipacao >= 0 && percentualCoparticipacao <= 100)) {
+            throw new DadoInvalidoException("O percentual do convênio deve estar entre 0 e 100.");
         }
-
-     public double calcularValorPaciente(double valorConsulta) {
-        return valorConsulta * percentualCoparticipacao;
-
-     }
-
-      public String getNome() {
-        return nome;
-      }
-
-      public String getCodigo(){
-        return codigo;
-      }
-
-      public double getPercentualCoparticipacao() {
-        return percentualCoparticipacao;
-      }
-
-      public double getValorMensalidade() {
-        return valorMensalidade;
-      }
-
+        this.percentualCoparticipacao = percentualCoparticipacao;
     }
+
+    public double calcularValorPaciente(double valorConsulta) {
+        return valorConsulta * percentualCoparticipacao / 100;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public double getPercentualCoparticipacao() {
+        return percentualCoparticipacao;
+    }
+
+    @Override
+    public String toString() {
+        return nome + " (paciente paga " + percentualCoparticipacao + "%)";
+    }
+}

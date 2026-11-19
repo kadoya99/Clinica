@@ -7,108 +7,87 @@ public class Clinica {
     private List<Consulta> consultas;
 
     public Clinica() {
-
         this.medicos = new ArrayList<>();
         this.consultas = new ArrayList<>();
         this.pacientes = new ArrayList<>();
-
     }
 
-    public void regMedico(Medico m) {
+    public void regMedico(Medico m) throws CadastroDuplicadoException {
+        for (Medico existente : medicos) {
+            if (existente.getCpf().equals(m.getCpf())) {
+                throw new CadastroDuplicadoException("Já existe um médico com o CPF " + m.getCpf() + ".");
+            }
+            if (existente.getCrm().equalsIgnoreCase(m.getCrm())) {
+                throw new CadastroDuplicadoException("Já existe um médico com o CRM " + m.getCrm() + ".");
+            }
+        }
         this.medicos.add(m);
-        System.out.println("Médico " + m.getNome() + " cadastrado com sucesso!");
     }
 
-    public void listAgendaM(String crmP) {
-        for (Medico m : this.medicos) {
-            if (m.getCrm().equals(crmP)) {
-                System.out.println("Agenda do Dr(a). " + m.getNome() + ".");
-                System.out.println(m.getAgenda());
-                return;
+    public void regPaciente(Paciente p) throws CadastroDuplicadoException {
+        for (Paciente existente : pacientes) {
+            if (existente.getCpf().equals(p.getCpf())) {
+                throw new CadastroDuplicadoException("Já existe um paciente com o CPF " + p.getCpf() + ".");
             }
         }
-        System.out.println("Médico com CRM " + crmP + " não encontrado.");
-
-    }
-
-    public void regPaciente(Paciente p) {
         this.pacientes.add(p);
-        System.out.println("Paciente " + p.getNome() + " cadastrado com sucesso!");
     }
 
-    public void agendarC(Paciente p, Medico m, String dataHora) {
-
-        SlotTempo slotEncontrado = null;
-        for (SlotTempo slot : m.getAgenda()) {
-            if (slot.getDataHora().equals(dataHora)) {
-                slotEncontrado = slot;
-                break;
+    public Consulta agendarC(Paciente p, Medico m, String dataHora) throws AgendamentoException {
+        SlotTempo slot = m.buscarSlot(dataHora);
+        if (slot == null) {
+            throw new AgendamentoException("O horário " + dataHora + " não existe na agenda do médico " + m.getNome() + ".");
+        }
+        if (slot.isOcupado()) {
+            throw new AgendamentoException("O horário " + dataHora + " já está ocupado.");
+        }
+        // o mesmo paciente não pode estar em duas consultas ao mesmo tempo
+        for (Consulta c : consultas) {
+            if (c.getPaciente().getCpf().equals(p.getCpf()) && c.getDataHora().equals(dataHora)) {
+                throw new AgendamentoException("O paciente " + p.getNome() + " já tem uma consulta em " + dataHora + ".");
             }
         }
 
-        if (slotEncontrado == null) {
-            System.out.println("Erro: Horário não disponível para o médico " + m.getNome());
-        return;
-
+        // se o médico aceita o convênio do paciente, o paciente paga só a coparticipação
+        double valor = m.getValorConsulta();
+        Convenio convenio = m.buscarConvenio(p.getConvenio());
+        if (convenio != null) {
+            valor = convenio.calcularValorPaciente(valor);
         }
 
-        if (slotEncontrado.isOcupado()) {
-            System.out.println("Erro: Horário já ocupado para o médico " + m.getNome());
-            return;
-        }
-
-        Consulta nova = new Consulta(m, p, dataHora);
+        Consulta nova = new Consulta(m, p, dataHora, valor);
         this.consultas.add(nova);
-        slotEncontrado.setOcupado(true);
-
-        p.addConsulta(dataHora);
-
-        System.out.println("Consulta agendada com sucesso: " + dataHora);
-
-
+        slot.setOcupado(true);
+        return nova;
     }
 
-    public void historicoPaciente(String buscaCPF){
-
-        for(Paciente p : this.pacientes){
-            if (p.getCpf().equals(buscaCPF)){
-                System.out.println("--- HISTÓRICO DO PACIENTE: " + p.getNome() + " ---");
-                System.out.println("Consultas: " + p.getListaConsulta());
-                System.out.println("Histórico Médico: " + p.getHistoricoMedico());
-                return;
-            }
-        }
-        System.out.println("Paciente com CPF " + buscaCPF + " não encontrado.");
-    }
-
-    public Medico buscarMedico(String crmBusca) {
+    public Medico buscarMedico(String crm) throws NaoEncontradoException {
         for (Medico m : this.medicos) {
-            if (m.getCrm().equals(crmBusca)) {
+            if (m.getCrm().equalsIgnoreCase(crm)) {
                 return m;
             }
         }
-        return null;
+        throw new NaoEncontradoException("Médico com CRM " + crm + " não encontrado.");
     }
 
-    public Paciente buscarPaciente(String nomeBusca) {
+    public Paciente buscarPaciente(String cpf) throws NaoEncontradoException {
         for (Paciente p : this.pacientes) {
-            if (p.getNome().equals(nomeBusca)) {
+            if (p.getCpf().equals(cpf)) {
                 return p;
             }
         }
-        return null;
+        throw new NaoEncontradoException("Paciente com CPF " + cpf + " não encontrado.");
     }
 
-public List<Medico> getMedicos() {
+    public List<Medico> getMedicos() {
         return this.medicos;
     }
-    
-  public List<Consulta> getConsultas() {
+
+    public List<Consulta> getConsultas() {
         return this.consultas;
     }
 
- public List<Paciente> getPacientes() {
+    public List<Paciente> getPacientes() {
         return this.pacientes;
     }
-
 }

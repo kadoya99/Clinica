@@ -45,5 +45,10 @@ public abstract String orientacaoUso();
     public void setIndicacao(String indicacao) {
         this.indicacao = indicacao;
     }
+
+    @Override
+    public String toString() {
+        return nome + " " + composicao + " - " + indicacao;
+    }
 }
 

@@ -22,7 +22,6 @@ public class SlotTempo {
 
     @Override
     public String toString() {
-        return dataHora + (ocupado ? " [OCUPADO] " : " [LIVRE]");
+        return dataHora + (ocupado ? " [OCUPADO]" : " [LIVRE]");
     }
-
 }

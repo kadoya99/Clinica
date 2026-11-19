@@ -1,38 +1,32 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Consulta {
+public class Consulta implements Persistivel {
     private Medico medico;
     private Paciente paciente;
     private String dataHora;
-    private Diagnostico diagnostico;
-
+    private double valorCobrado; // já com o desconto do convênio, se houver
+    private Diagnostico diagnostico; // null enquanto a consulta não foi atendida
     private List<SinaisVitais> sinaisVitais;
-    private List<Medicamento> medicamentoPrescrito;
 
-    public Consulta ( Medico medico, Paciente paciente, String dataHora){
-
+    public Consulta(Medico medico, Paciente paciente, String dataHora, double valorCobrado) {
         this.medico = medico;
         this.paciente = paciente;
         this.dataHora = dataHora;
-        this.medicamentoPrescrito = new ArrayList<>();
-        this.sinaisVitais = new ArrayList<SinaisVitais>();
+        this.valorCobrado = valorCobrado;
+        this.sinaisVitais = new ArrayList<>();
     }
 
-    public void finalizarConsulta(Diagnostico d){
-        this.diagnostico = d;
+    public boolean isAtendida() {
+        return diagnostico != null;
+    }
 
-        for (Medicamento m : d.getMedicamentosPassados()) {
-            this.indicaMedicamento(m);
+    public void finalizarConsulta(List<SinaisVitais> sinais, Diagnostico d) throws ConsultaJaAtendidaException {
+        if (isAtendida()) {
+            throw new ConsultaJaAtendidaException("Esta consulta já foi atendida.");
         }
-    }
-
-    public void indicaMedicamento (Medicamento medicamento){
-        this.medicamentoPrescrito.add(medicamento);
-    }
-
-    public void addSinaisVitais(String nome, double valor, String unidade) {
-        this.sinaisVitais.add(new SinaisVitais(nome, valor, unidade));
+        this.sinaisVitais.addAll(sinais);
+        this.diagnostico = d;
     }
 
     public List<SinaisVitais> getSinaisVitais() {
@@ -51,14 +45,40 @@ public class Consulta {
         return dataHora;
     }
 
-    public void setDataHora(String dataHora) {
-        this.dataHora = dataHora;
+    public double getValorCobrado() {
+        return valorCobrado;
     }
 
-     public Diagnostico getDiagnostico() {
-        return this.diagnostico;
+    public Diagnostico getDiagnostico() {
+        return diagnostico;
     }
-    public List<Medicamento> getMedicamentoPrescrito() {
-        return medicamentoPrescrito;
+
+    @Override
+    public String paraLinha() {
+        String doenca = "";
+        String descricao = "";
+        String sinais = "";
+        String medicamentos = "";
+        if (diagnostico != null) {
+            doenca = diagnostico.getNomeDoenca();
+            descricao = diagnostico.getDescricao();
+            List<String> listaSinais = new ArrayList<>();
+            for (SinaisVitais sv : sinaisVitais) {
+                listaSinais.add(sv.paraTexto());
+            }
+            sinais = String.join("#", listaSinais);
+            List<String> ids = new ArrayList<>();
+            for (Medicamento m : diagnostico.getMedicamentosPassados()) {
+                ids.add(m.getId());
+            }
+            medicamentos = String.join("#", ids);
+        }
+        return medico.getCrm() + ";" + paciente.getCpf() + ";" + dataHora + ";" + valorCobrado + ";"
+                + doenca + ";" + descricao + ";" + sinais + ";" + medicamentos;
+    }
+
+    @Override
+    public String toString() {
+        return dataHora + " - " + paciente.getNome() + " com " + medico.getNome();
     }
 }
