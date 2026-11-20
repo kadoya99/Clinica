@@ -44,14 +44,18 @@ public class PainelAtendimento extends JPanel implements Atualizavel {
         form.add(txtDoenca);
         form.add(new JLabel("Descrição dos sintomas:"));
         form.add(txtSintomas);
-        form.add(new JLabel("Medicamentos (Ctrl para escolher vários, ou nenhum):"));
-        form.add(new JScrollPane(listaMedicamentos));
+
+        // a lista fica fora do GridLayout, senão todas as linhas ficam com a altura dela
+        JPanel painelRemedios = new JPanel(new BorderLayout());
+        painelRemedios.add(new JLabel("Medicamentos (Ctrl para escolher vários, ou nenhum):"), BorderLayout.NORTH);
+        painelRemedios.add(new JScrollPane(listaMedicamentos), BorderLayout.CENTER);
 
         JButton btnFinalizar = new JButton("Finalizar atendimento");
         btnFinalizar.addActionListener(e -> finalizar());
 
         JPanel topo = new JPanel(new BorderLayout());
-        topo.add(form, BorderLayout.CENTER);
+        topo.add(form, BorderLayout.NORTH);
+        topo.add(painelRemedios, BorderLayout.CENTER);
         topo.add(btnFinalizar, BorderLayout.SOUTH);
 
         areaResumo.setEditable(false);
