@@ -1,15 +1,55 @@
-import java.util.List;
-
 import java.util.ArrayList;
 
-import java.util.Scanner;
+import java.util.List;
 
-import java.util.Locale; 
-
-import java.io.BufferedReader;
-
-import java.io.FileReader;
+import java.io.File;
 
 import java.io.IOException;
 
-Bibliotecas nativas do JDK. 
+import java.nio.charset.StandardCharsets;
+
+import java.nio.file.Files;
+
+import java.nio.file.Paths;
+
+import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+
+import java.time.format.DateTimeFormatter;
+
+import java.time.format.DateTimeParseException;
+
+import java.time.format.ResolverStyle;
+
+import javax.swing.JButton;
+
+import javax.swing.JComboBox;
+
+import javax.swing.JFrame;
+
+import javax.swing.JLabel;
+
+import javax.swing.JList;
+
+import javax.swing.JOptionPane;
+
+import javax.swing.JPanel;
+
+import javax.swing.JScrollPane;
+
+import javax.swing.JTabbedPane;
+
+import javax.swing.JTextArea;
+
+import javax.swing.JTextField;
+
+import javax.swing.SwingUtilities;
+
+import java.awt.BorderLayout;
+
+import java.awt.FlowLayout;
+
+import java.awt.GridLayout;
+
+Bibliotecas nativas do JDK.
